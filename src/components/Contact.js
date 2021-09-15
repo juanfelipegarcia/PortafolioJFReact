@@ -1,4 +1,9 @@
 import React from "react";
+import emailjs from "emailjs-com";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 export default function Contact() {
   const [name, setName] = React.useState("");
@@ -22,6 +27,39 @@ export default function Contact() {
     })
       .then(() => alert("Message sent!"))
       .catch((error) => alert(error));
+  }
+
+  const handleInputName = (e) => {
+    setName(e.target.value);
+  };
+  const handleInputEmail = (e) => {
+    setEmail(e.target.value);
+  };
+  const handleInputMessage = (e) => {
+    setMessage(e.target.value);
+  };
+
+  function sendEmail(e) {
+    e.preventDefault();
+
+    emailjs
+      .sendForm(
+        "service_u2u8so9",
+        "template_7j9gj1p",
+        e.target,
+        "user_l3Zwewj30bTjvhxmPUjol"
+      )
+      .then((res) => {
+        console.log(res);
+        MySwal.fire("Message sent!");
+        setName("");
+        setEmail("");
+        setMessage("");
+
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   return (
