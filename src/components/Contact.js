@@ -1,5 +1,9 @@
 import React from "react";
+import emailjs from "emailjs-com";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
+const MySwal = withReactContent(Swal);
 
 
 
@@ -25,6 +29,32 @@ export default function Contact() {
     })
       .then(() => alert("Message sent!"))
       .catch((error) => alert(error));
+  }
+
+  const handleInputName = (e) => { setName(e.target.value); };
+  const handleInputEmail = (e) => { setEmail(e.target.value); };
+  const handleInputMessage = (e) => { setMessage(e.target.value); };
+
+  function sendEmail(e) {
+    e.preventDefault();
+
+    emailjs.sendForm(
+        "service_pzpg9vc",
+        "template_ljpifij",
+        e.target,
+        "user_saqTOLcT21uwO5mNpv1uy"
+      )
+      .then((res) => {
+        console.log(res);
+        MySwal.fire("Mensaje enviado!");
+        setName("");
+        setEmail("");
+        setMessage("");
+
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   return (
@@ -70,7 +100,7 @@ export default function Contact() {
         <form
           netlify
           name="contact"
-          onSubmit={handleSubmit}
+          onSubmit={sendEmail}
           className="lg:w-1/3 md:w-1/2 flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0">
           <h2 className="text-white sm:text-4xl text-3xl mb-1 font-medium title-font">
             Contactame
@@ -86,10 +116,11 @@ export default function Contact() {
             </label>
             <input
               type="text"
+              value={name}
               id="name"
               name="name"
               className="w-full bg-gray-800 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-              onChange={(e) => setName(e.target.value)}
+              onChange={handleInputName}
             />
           </div>
           <div className="relative mb-4">
@@ -98,10 +129,11 @@ export default function Contact() {
             </label>
             <input
               type="email"
+              value={email}
               id="email"
               name="email"
               className="w-full bg-gray-800 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleInputEmail}
             />
           </div>
           <div className="relative mb-4">
@@ -112,14 +144,15 @@ export default function Contact() {
             </label>
             <textarea
               id="message"
+              value={message}
               name="message"
               className="w-full bg-gray-800 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 h-32 text-base outline-none text-gray-100 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={handleInputMessage}
             />
           </div>
           <button
             type="submit"
-            className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+            className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg" onChange={handleSubmit}>
             Enviar
           </button>
         </form>
